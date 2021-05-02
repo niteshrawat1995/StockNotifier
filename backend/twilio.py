@@ -1,20 +1,36 @@
+import os
+from abc import ABC, abstractmethod
+
 from twilio.rest import Client
 
-account_sid = "AC88280bf2b4d41a23b63027a0be3a9b91"
-auth_token = "98ed9bb9e01fda7eb55afc28b3ed9d7e"
-my_twilio_number = "+13146666885"
+TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
+TWILIO_NUMBER = os.environ.get("TWILIO_NUMBER")
 
-class Twilio:
+
+class Communication(ABC):
+    
+    @abstractmethod
+    def send(self, to, msg):
+        pass
+
+
+class Twilio(Communication):
     def __init__(self):
-        self.client = Client(account_sid, auth_token)
+        self.client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     def send(self, to, msg):
         message = (
             self.client.messages
             .create(
                 body=msg,
-                from_=my_twilio_number,
+                from_=TWILIO_NUMBER,
                 to=f'+91{to}'
             )
         )
         print(message.sid)
+
+
+class Console(Communication):
+    def send(self, to, msg):
+        print(f"Message {msg} | To {to}")
