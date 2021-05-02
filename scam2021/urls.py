@@ -26,3 +26,8 @@ urlpatterns = [
     url("api/v1/stock/", include(stock_urls)),
     url("api/v1/account/", include(account_urls)),
 ]
+
+# from rest_framework_simplejwt.views import (
+#     TokenObtainPairView,
+#     TokenRefreshView,
+# )

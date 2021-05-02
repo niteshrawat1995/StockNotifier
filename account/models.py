@@ -1,5 +1,7 @@
+from typing import Dict
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -37,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ("username", )
@@ -46,6 +49,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return self.email
 
-    def tokens(self):
-    # TODO: implement it
-        return ""
+    def get_token(self) -> Dict:
+        data = {}
+        refresh = RefreshToken.for_user(self)
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
+        self.last_login = timezone.now()
+        # NOTE: This will trigger post save of user
+        self.save(update_fields=["last_login"])
+        return data
