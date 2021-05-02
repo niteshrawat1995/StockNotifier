@@ -9,7 +9,6 @@ TWILIO_NUMBER = os.environ.get("TWILIO_NUMBER")
 
 
 class Communication(ABC):
-    
     @abstractmethod
     def send(self, to, msg):
         pass
@@ -20,13 +19,8 @@ class Twilio(Communication):
         self.client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     def send(self, to, msg):
-        message = (
-            self.client.messages
-            .create(
-                body=msg,
-                from_=TWILIO_NUMBER,
-                to=f'+91{to}'
-            )
+        message = self.client.messages.create(
+            body=msg, from_=TWILIO_NUMBER, to=f"+91{to}"
         )
         print(message.sid)
 

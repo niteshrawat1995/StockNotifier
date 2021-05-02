@@ -15,7 +15,7 @@ class LoginSerializer(serializers.Serializer):
     otp = serializers.CharField()
 
     def validate(self, attrs):
-        validated_data= super().validate(attrs)
+        validated_data = super().validate(attrs)
         phone_number, otp = attrs["phone_number"], attrs["otp"]
         totp = TOTPBackend(phone_number=phone_number)
         verify = totp.verify_otp(otp=otp)

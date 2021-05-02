@@ -1,3 +1,3 @@
 from bsedata.bse import BSE
 
-bse = BSE(update_codes = True)
+bse = BSE(update_codes=True)

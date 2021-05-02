@@ -9,40 +9,78 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Period',
+            name="Period",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.IntegerField(verbose_name='1-24 representing clock times')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "value",
+                    models.IntegerField(verbose_name="1-24 representing clock times"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Stock',
+            name="Stock",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('scrip_code', models.CharField(max_length=255)),
-                ('company_name', models.CharField(max_length=255)),
-                ('current_value', models.CharField(max_length=255)),
-                ('security_id', models.CharField(max_length=255)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("scrip_code", models.CharField(max_length=255)),
+                ("company_name", models.CharField(max_length=255)),
+                ("current_value", models.CharField(max_length=255)),
+                ("security_id", models.CharField(max_length=255)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='StockReminder',
+            name="StockReminder",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('lower', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('upper', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('is_active', models.BooleanField(default=True)),
-                ('periods', models.ManyToManyField(to='stock.Period')),
-                ('stock', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='stock.stock')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("lower", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("upper", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("is_active", models.BooleanField(default=True)),
+                ("periods", models.ManyToManyField(to="stock.Period")),
+                (
+                    "stock",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="stock.stock",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

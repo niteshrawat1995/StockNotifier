@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('stock', '0003_auto_20210430_1452'),
-    ]
+    dependencies = [("stock", "0003_auto_20210430_1452")]
 
     operations = [
         migrations.AlterField(
-            model_name='stockreminder',
-            name='periods',
-            field=models.ManyToManyField(blank=True, null=True, to='stock.Period'),
-        ),
+            model_name="stockreminder",
+            name="periods",
+            field=models.ManyToManyField(blank=True, null=True, to="stock.Period"),
+        )
     ]

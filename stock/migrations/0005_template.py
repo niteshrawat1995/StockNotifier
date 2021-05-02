@@ -5,17 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('stock', '0004_alter_stockreminder_periods'),
-    ]
+    dependencies = [("stock", "0004_alter_stockreminder_periods")]
 
     operations = [
         migrations.CreateModel(
-            name='Template',
+            name="Template",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('slug', models.SlugField(unique=True)),
-                ('body', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("slug", models.SlugField(unique=True)),
+                ("body", models.TextField()),
             ],
-        ),
+        )
     ]

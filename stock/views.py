@@ -13,7 +13,7 @@ from .models import Stock
 class StockDetailView(generics.RetrieveAPIView):
     serializer_class = StockDetailSerializer
     queryset = Stock.objects.all()
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, scrip_code):
         # import pdb; pdb.set_trace()
@@ -24,10 +24,9 @@ class StockDetailView(generics.RetrieveAPIView):
 
 
 class StockListView(generics.ListAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = StockListSerializer
     queryset = Stock.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = StockFilter
     pagination_class = PageNumberPagination
-

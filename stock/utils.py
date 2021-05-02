@@ -16,7 +16,7 @@ def get_current_price(scrip_code: str) -> Union[float, None]:
 
 def update_stock_records():
     codes = bse.getScripCodes()
-    
+
     for scrip_code, _ in codes.items():
         try:
             quote = bse.getQuote(scripCode=scrip_code)
@@ -26,7 +26,7 @@ def update_stock_records():
             data = {
                 "company_name": quote["companyName"],
                 "scrip_code": quote["scripCode"],
-                "security_id": quote["securityID"]
+                "security_id": quote["securityID"],
             }
             stock = Stock.objects.create(**data)
             print(f"created stock for scripCode: {stock.scrip_code}")
@@ -36,15 +36,17 @@ def update_stock_records():
 def find_reminders():
     # TODO: Add distinct instead of set
     reminder_stock_scrip_codes = set(
-        StockReminder.objects.filter(is_active=True, stock__isnull=False)
-        .values_list("stock__scrip_code", flat=True)
+        StockReminder.objects.filter(is_active=True, stock__isnull=False).values_list(
+            "stock__scrip_code", flat=True
+        )
     )
     if len(reminder_stock_scrip_codes) == 0:
         print("NO reminders set")
         return None
     result = {
-        scrip_code: price
-        for scrip_code in reminder_stock_scrip_codes if (price := get_current_price(scrip_code)) is not None
+        scrip_code: get_current_price(scrip_code)
+        for scrip_code in reminder_stock_scrip_codes
+        if get_current_price(scrip_code) is not None
     }
     alert_user(result)
 
@@ -59,11 +61,13 @@ def alert_user(result: Dict):
             .annotate(stock_company_name=F("stock__company_name"))
         )
         for reminder in reminders:
-            msg = build_message(reminder.stock_company_name, price, reminder.lower, reminder.upper)
+            msg = build_message(
+                reminder.stock_company_name, price, reminder.lower, reminder.upper
+            )
             comm = Twilio()
             comm.send(to=reminder.user.phone_number, msg=msg)
             print(msg)
-    
+
 
 def build_message(stock_name, price, lower, upper) -> str:
     drop_msg = f"{stock_name} dropped from your lower {lower} to {price}"

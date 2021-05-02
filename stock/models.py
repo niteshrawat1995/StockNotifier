@@ -18,14 +18,14 @@ class Stock(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_price(self):
-        # refresh_time = datetime.now() - self.updated_at 
+        # refresh_time = datetime.now() - self.updated_at
         # if refresh_time.days > 1:
-            # bse.updateScripCodes()
+        # bse.updateScripCodes()
         return float(bse.getQuote(self.scrip_code)["currentValue"])
 
     def __str__(self):
         return f"{self.scrip_code} | {self.company_name}"
-            
+
 
 class StockReminder(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
@@ -45,4 +45,3 @@ class Template(models.Model):
 
     def __str__(self) -> str:
         return self.slug
-    

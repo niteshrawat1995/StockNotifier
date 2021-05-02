@@ -22,7 +22,7 @@ from stock import urls as stock_urls
 from account import urls as account_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     url("api/v1/stock/", include(stock_urls)),
     url("api/v1/account/", include(account_urls)),
 ]

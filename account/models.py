@@ -1,5 +1,9 @@
 from typing import Dict
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -15,7 +19,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user
-    
+
     def create_superuser(self, username, email, password):
         if username is None:
             raise TypeError("User should have a username")
@@ -24,8 +28,8 @@ class UserManager(BaseUserManager):
         if password is None:
             raise TypeError("Password should not be None")
         user = self.create_user(username, email, password)
-        user.is_staff=True
-        user.is_superuser=True
+        user.is_staff = True
+        user.is_superuser = True
         user.save()
         return user
 
@@ -42,7 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ("username", )
+    REQUIRED_FIELDS = ("username",)
 
     objects = UserManager()
 
