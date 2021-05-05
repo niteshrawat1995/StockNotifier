@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Stock
+from .models import Stock, StockReminder
 
 
 class StockDetailSerializer(serializers.ModelSerializer):
@@ -20,3 +20,9 @@ class StockListSerializer(serializers.ModelSerializer):
 
     def get_price(self, instance):
         return instance.get_price()
+
+
+class StockReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockReminder
+        fields = "__all__"

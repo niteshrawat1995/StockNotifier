@@ -1,13 +1,20 @@
+from django.http.response import Http404
 from django_filters import rest_framework as filters
+from rest_framework.decorators import action
 
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.serializers import Serializer
 
-from .serializers import StockDetailSerializer, StockListSerializer
-from .filters import StockFilter
-from .models import Stock
+from stock.serializers import (
+    StockDetailSerializer,
+    StockListSerializer,
+    StockReminderSerializer,
+)
+from stock.filters import StockFilter
+from stock.models import Stock, StockReminder
 
 
 class StockDetailView(generics.RetrieveAPIView):
@@ -30,3 +37,41 @@ class StockListView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = StockFilter
     pagination_class = PageNumberPagination
+
+
+class StockReminderViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = StockReminderSerializer
+    model = StockReminder
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data, status=200)
+
+    @action(methods=["post"], detail=True, url_path="stop")
+    def stop(self, request, pk, *args, **kwargs):
+        reminder_id = pk
+        try:
+            reminder = self.get_queryset().get(id=reminder_id)
+        except self.model.DoesNotExist:
+            raise Http404
+        reminder.is_active = False
+        reminder.save()
+        serializer = self.get_serializer(reminder)
+        return Response(serializer.data, status=200)
+
+    @action(methods=["post"], detail=True, url_path="start")
+    def start(self, request, pk, *args, **kwargs):
+        reminder_id = pk
+        try:
+            reminder = self.get_queryset().get(id=reminder_id)
+        except self.model.DoesNotExist:
+            raise Http404
+        reminder.is_active = True
+        reminder.save()
+        serializer = self.get_serializer(reminder)
+        return Response(serializer.data, status=200)
