@@ -1,6 +1,7 @@
 from account.models import User
 from django.db import models
 from stock import bse
+from django.utils import timezone
 
 
 class Period(models.Model):
@@ -18,9 +19,9 @@ class Stock(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def get_price(self):
-        # refresh_time = datetime.now() - self.updated_at
-        # if refresh_time.days > 1:
-        # bse.updateScripCodes()
+        refresh_time = timezone.now() - self.updated_at
+        if refresh_time.days > 1:
+            bse.updateScripCodes()
         return float(bse.getQuote(self.scrip_code)["currentValue"])
 
     def __str__(self):
@@ -33,10 +34,20 @@ class StockReminder(models.Model):
     lower = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     upper = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    periods = models.ManyToManyField(to=Period, null=True, blank=True)
+    periods = models.ManyToManyField(to=Period)
 
     def __str__(self) -> str:
         return f"{self.user.email} | {self.stock}"
+
+    def stop(self) -> None:
+        if self.is_active != False:
+            self.is_active = False
+        self.save()
+
+    def start(self) -> None:
+        if self.is_active != True:
+            self.is_active = True
+        self.save()
 
 
 class Template(models.Model):
